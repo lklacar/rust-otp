@@ -1,0 +1,16 @@
+[package]
+name = "otp"
+version = "0.1.0"
+authors = ["jenkins-x-bot <jenkins-x@googlegroups.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+rand = "0.8.3"
+rand_hc = "0.3.0"
+clap = { version = "2.33.3", features = ["yaml"] }
+rpassword = "5.0.1"
+rust-crypto = "0.2.36"
+sha256 = "1.0.2"
+aes-keywrap = "0.2.2"
