@@ -9,29 +9,21 @@ use crate::files::{read_bytes, write_bytes};
 
 fn rand_array(length: u32) -> Vec<u8> {
     let mut random_generator: Hc128Rng = Hc128Rng::from_entropy();
-    let mut result: Vec<u8> = vec![];
     let limit = (length + CHUNK_SIZE as u32 - length % CHUNK_SIZE as u32) / 4;
-    for _i in 0..limit {
+    return (0..limit).flat_map(|_| {
         let rand = random_generator.next_u32();
         let rand_bytes = rand.to_be_bytes();
-        for byte in &rand_bytes {
-            result.push(*byte);
-        }
-    }
-
-    return result;
+        return rand_bytes.to_vec().into_iter();
+    }).collect();
 }
 
 fn otp(input: &Vec<u8>, key: &Vec<u8>) -> Vec<u8> {
-    let mut result: Vec<u8> = vec![];
-
-    for i in 0..input.len() {
+    return (0..input.len()).map(|i| {
         let input_byte = input[i];
         let key_byte = key[i];
         let otp_byte = input_byte ^ key_byte;
-        result.push(otp_byte);
-    }
-    return result;
+        return otp_byte;
+    }).collect();
 }
 
 pub fn otp_encrypt(input_file_name: &String) {

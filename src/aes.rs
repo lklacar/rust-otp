@@ -9,7 +9,7 @@ pub fn key_from_string(string: &String) -> [u8; 32] {
     let key = [42u8; KEY_SIZE];
     let wrapper = Aes256KeyWrap::new(&key);
     let wrapped = wrapper.encapsulate(string.as_bytes()).unwrap();
-
+    
     let mut xs: [u8; KEY_SIZE] = [0; KEY_SIZE];
     for i in 0..wrapped.len() {
         xs[i] = wrapped[i];
@@ -20,31 +20,20 @@ pub fn key_from_string(string: &String) -> [u8; 32] {
 
 pub fn aes_encrypt(input: &Vec<u8>, key: &[u8]) -> Vec<u8> {
     let cipher = AesSafe256Encryptor::new(&key);
-    let mut res: Vec<u8> = vec![];
 
-    for chunk in input.chunks(CHUNK_SIZE) {
+    return input.chunks(CHUNK_SIZE).flat_map(|chunk| {
         let mut output: [u8; CHUNK_SIZE] = [0; CHUNK_SIZE];
         cipher.encrypt_block(&chunk, &mut output);
-        for byte in output.iter() {
-            res.push(*byte);
-        }
-    }
-
-    return res;
+        return output.to_vec().into_iter();
+    }).collect();
 }
-
 
 pub fn aes_decrypt(input: &Vec<u8>, key: &[u8]) -> Vec<u8> {
     let cipher = AesSafe256Decryptor::new(&key);
-    let mut res: Vec<u8> = vec![];
 
-    for chunk in input.chunks(CHUNK_SIZE) {
+    return input.chunks(CHUNK_SIZE).flat_map(|chunk| {
         let mut output: [u8; CHUNK_SIZE] = [0; CHUNK_SIZE];
         cipher.decrypt_block(&chunk, &mut output);
-        for byte in output.iter() {
-            res.push(*byte);
-        }
-    }
-
-    return res;
+        return output.to_vec().into_iter();
+    }).collect();
 }

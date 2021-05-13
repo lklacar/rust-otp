@@ -4,7 +4,7 @@ use std::io::{Error, Read, Write};
 
 pub fn read_bytes(filename: &String) -> Vec<u8> {
     let file_metadata = match fs::metadata(&filename) {
-        Ok(x) => { x }
+        Ok(x) => x,
         Err(_) => {
             eprintln!("File '{}' not valid.", filename);
             process::exit(1);

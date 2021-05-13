@@ -39,6 +39,7 @@ enum SubCommand {
 
 /// Encrypt file
 #[derive(Clap)]
+#[clap(setting = AppSettings::ColoredHelp)]
 struct Encrypt {
     /// Input file
     input: String,
@@ -46,6 +47,7 @@ struct Encrypt {
 
 ///  Decrypt file
 #[derive(Clap)]
+#[clap(setting = AppSettings::ColoredHelp)]
 struct Decrypt {
     /// Input file
     input: String,
@@ -58,11 +60,7 @@ fn main() {
     let opts: Opts = Opts::parse();
 
     match opts.subcmd {
-        SubCommand::E(params) => {
-            otp_encrypt(&params.input);
-        }
-        SubCommand::D(params) => {
-            otp_decrypt(&params.input, &params.key)
-        }
+        SubCommand::E(params) => otp_encrypt(&params.input),
+        SubCommand::D(params) => otp_decrypt(&params.input, &params.key)
     }
 }
