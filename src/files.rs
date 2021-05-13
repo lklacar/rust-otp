@@ -1,6 +1,6 @@
 use std::{fs, process};
-use std::fs::{File, Metadata};
-use std::io::{Error, Read, Write};
+use std::fs::File;
+use std::io::{Read, Write};
 
 pub fn read_bytes(filename: &String) -> Vec<u8> {
     let file_metadata = match fs::metadata(&filename) {
@@ -19,5 +19,8 @@ pub fn read_bytes(filename: &String) -> Vec<u8> {
 
 pub fn write_bytes(filename: &String, bytes: &Vec<u8>) {
     let mut file = File::create(&filename).expect("Cannot create encrypted file");
-    file.write(bytes);
+    match file.write(bytes) {
+        Ok(_) => {}
+        Err(_) => { eprintln!("Cannot write file {}", filename) }
+    }
 }

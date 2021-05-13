@@ -1,6 +1,3 @@
-use std::process;
-
-use crypto::aessafe::AesSafe256Encryptor;
 use rand::{RngCore, SeedableRng};
 use rand_hc::Hc128Rng;
 

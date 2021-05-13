@@ -1,21 +1,7 @@
-#[macro_use]
 extern crate clap;
 
-use std::{fs, process};
-use std::fs::File;
-use std::io::{Read, Write};
-
-use aes_keywrap::Aes256KeyWrap;
 use clap::{AppSettings, Clap};
-use clap::App;
-use crypto::aessafe::AesSafe256Encryptor;
-use crypto::symmetriccipher::BlockEncryptor;
-use rand::prelude::*;
-use rand_hc::Hc128Rng;
-use sha256::digest;
 
-use crate::aes::key_from_string;
-use crate::files::{read_bytes, write_bytes};
 use crate::otp::{otp_decrypt, otp_encrypt};
 
 mod files;
