@@ -6,6 +6,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 
 use aes_keywrap::Aes256KeyWrap;
+use clap::{AppSettings, Clap};
 use clap::App;
 use crypto::aessafe::AesSafe256Encryptor;
 use crypto::symmetriccipher::BlockEncryptor;
@@ -21,37 +22,47 @@ mod files;
 mod aes;
 mod otp;
 
+/// CLI utility for OTP+AES encryption
+#[derive(Clap)]
+#[clap(version = "1.0", author = "Luka Klačar <luka@qubit.rs>")]
+#[clap(setting = AppSettings::ColoredHelp)]
+struct Opts {
+    #[clap(subcommand)]
+    subcmd: SubCommand,
+}
+
+#[derive(Clap)]
+enum SubCommand {
+    E(Encrypt),
+    D(Decrypt),
+}
+
+/// Encrypt file
+#[derive(Clap)]
+struct Encrypt {
+    /// Input file
+    input: String,
+}
+
+///  Decrypt file
+#[derive(Clap)]
+struct Decrypt {
+    /// Input file
+    input: String,
+
+    /// OTP Key
+    key: String,
+}
 
 fn main() {
-    let yaml = load_yaml!("cli.yml");
-    let matches = App::from_yaml(yaml).get_matches();
+    let opts: Opts = Opts::parse();
 
-    if (!matches.is_present("encrypt") && !matches.is_present("decrypt")) || (matches.is_present("encrypt") && matches.is_present("decrypt")) {
-        println!("Choose either encryption or decryption options. Use --help for more information.");
-        process::exit(1);
-    }
-
-    let filename = match matches.value_of("INPUT") {
-        Some(input) => String::from(input),
-        None => {
-            println!("Please provide INPUT parameter. See --help for more information");
-            process::exit(1);
+    match opts.subcmd {
+        SubCommand::E(params) => {
+            otp_encrypt(&params.input);
         }
-    };
-
-    if matches.is_present("encrypt") {
-        otp_encrypt(&filename);
-    }
-
-    if matches.is_present("decrypt") {
-        let keypath = match matches.value_of("key") {
-            Some(path) => { String::from(path) }
-            None => {
-                println!("Please provide key for decryption. See --help for more information.");
-                process::exit(1);
-            }
-        };
-
-        otp_decrypt(&filename, &keypath);
+        SubCommand::D(params) => {
+            otp_decrypt(&params.input, &params.key)
+        }
     }
 }
